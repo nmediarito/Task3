@@ -24,7 +24,6 @@ public class Order {
     @ManyToMany
     private List<Product> products = new ArrayList<>();
 
-
     public Long getId() {
         return id;
     }
