@@ -1,4 +1,4 @@
-package com.example.orderservice.entities;
+package com.example.biservice.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
