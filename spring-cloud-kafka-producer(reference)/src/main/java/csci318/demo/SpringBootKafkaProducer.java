@@ -1,6 +1,6 @@
-package com.example.orderservice;
+package csci318.demo;
 
-import com.example.orderservice.entities.OrderEvent;
+import csci318.demo.model.Appliance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -11,20 +11,14 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-
 @SpringBootApplication
-public class OrderserviceApplication {
+public class SpringBootKafkaProducer {
 
-	private static final Logger log = LoggerFactory.getLogger(OrderserviceApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(SpringBootKafkaProducer.class);
 	private static final String url = "https://random-data-api.com/api/appliance/random_appliance";
 
-	@Bean
-	public RestTemplate getRestTemplate(){
-		return new RestTemplate();
-	}
-
 	public static void main(String[] args) {
-		SpringApplication.run(OrderserviceApplication.class, args);
+		SpringApplication.run(SpringBootKafkaProducer.class, args);
 	}
 
 	@Bean
@@ -37,12 +31,12 @@ public class OrderserviceApplication {
 		return args -> {
 			try {
 				while (!Thread.currentThread().isInterrupted()){
-					OrderEvent appliance = restTemplate.getForObject(url, OrderEvent.class);
+					Appliance appliance = restTemplate.getForObject(url, Appliance.class);
 					assert appliance != null;
 					log.info(appliance.toString());
 					//The binder name "appliance-outbound" is defined in the application.yml.
-					streamBridge.send("OrderEvent-outbound", appliance);
-					Thread.sleep(2000);
+					streamBridge.send("appliance-outbound", appliance);
+					Thread.sleep(1200);
 				}
 			}
 			catch(InterruptedException ignored){}

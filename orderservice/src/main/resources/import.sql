@@ -1,0 +1,1 @@
+INSERT INTO ORDERS (id, productName, quantity) VALUES (1, 'Banana', 53);
