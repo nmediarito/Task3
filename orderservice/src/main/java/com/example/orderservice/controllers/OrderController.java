@@ -1,6 +1,7 @@
 package com.example.orderservice.controllers;
 
 import com.example.orderservice.entities.Customer;
+import com.example.orderservice.entities.KafkaEvent;
 import com.example.orderservice.entities.Order;
 import com.example.orderservice.entities.Product;
 import com.example.orderservice.repositories.OrderRepository;

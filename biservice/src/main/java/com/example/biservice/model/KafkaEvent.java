@@ -1,4 +1,4 @@
-package com.example.orderservice.entities;
+package com.example.biservice.model;
 
 public class KafkaEvent {
 
@@ -59,4 +59,5 @@ public class KafkaEvent {
                 ", price=" + price +
                 '}';
     }
+
 }

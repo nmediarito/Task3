@@ -3,7 +3,7 @@ spring.cloud.stream.bindings:
   process-in-0:
     destination: order-topic
   process-out-0:
-    destination: orderout-topic
+    destination: product-topic
 spring.cloud.stream.kafka.streams.binder:
   brokers: localhost:9092
   configuration:
@@ -16,7 +16,7 @@ spring.cloud.stream.kafka.streams.bindings:
         default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
         spring.json.trusted.packages: '*'
-        spring.json.value.default.type: com.example.biservice.model.Order
+        spring.json.value.default.type: com.example.biservice.model.KafkaEvent
   process-out-0:
     producer:
       configuration:

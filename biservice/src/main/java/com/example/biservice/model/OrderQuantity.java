@@ -3,13 +3,13 @@ package com.example.biservice.model;
 public class OrderQuantity {
 
     private String productName;
-    private int quantity;
+    private long quantity;
 
     public OrderQuantity(){
 
     }
 
-    public OrderQuantity(String productName, int quantity) {
+    public OrderQuantity(String productName, long quantity) {
         this.productName = productName;
         this.quantity = quantity;
     }
@@ -22,11 +22,11 @@ public class OrderQuantity {
         this.productName = productName;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 

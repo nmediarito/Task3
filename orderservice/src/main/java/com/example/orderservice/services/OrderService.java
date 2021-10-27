@@ -1,6 +1,8 @@
 package com.example.orderservice.services;
 
+import com.example.orderservice.OrderserviceApplication;
 import com.example.orderservice.entities.Customer;
+import com.example.orderservice.entities.KafkaEvent;
 import com.example.orderservice.entities.Order;
 import com.example.orderservice.entities.Product;
 import com.example.orderservice.events.OrderEventPublisher;
@@ -29,6 +31,10 @@ public class OrderService {
     private CustomerRepository customerRepository;
     private ProductRepository productRepository;
 
+    public OrderService(){
+
+    }
+
     @Autowired
     public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, OrderEventPublisher publisher, RestTemplateBuilder restTemplate){
         this.orderRepository = orderRepository;
@@ -42,11 +48,13 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public void createOrder(@PathVariable Long id, @PathVariable String pName, @PathVariable int quantity){
+    public KafkaEvent createOrder(@PathVariable Long id, @PathVariable String pName, @PathVariable int quantity){
+
         // create an instance of RestTemplate
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> request = new HttpEntity<>(headers);
+        KafkaEvent kafkaEvent = new KafkaEvent();
         // make an HTTP GET request
         ResponseEntity<Boolean> validateID = restTemplate.exchange("http://localhost:8082/customersValidate/" + id, HttpMethod.GET, request, Boolean.class);
 
@@ -54,15 +62,23 @@ public class OrderService {
             ResponseEntity<Integer> checkInventory = restTemplate.exchange("http://localhost:8080/getInventory/" + pName , HttpMethod.GET, request, Integer.class);
             //check the stock quantity using product service
             System.out.println("UNIT PRICE: $" + checkInventory.getBody());
+            kafkaEvent.setPrice(checkInventory.getBody());
             //save in orders table and orders_products table after checks
             if(saveOrder(pName, id, quantity)){
+                //create an event of an order for Kafka
+                kafkaEvent.setCustomerID(id);
+                kafkaEvent.setProductName(pName);
+                kafkaEvent.setQuantity(quantity);
+                System.out.println(kafkaEvent.toString());
                 System.out.println("ORDER CREATED SUCCESSFULLY");
                 //raise a domain event for the order
                 publisher.publishEvent("CREATING ORDER", pName, quantity);
+                return kafkaEvent;
             }
         } else {
             throw new IllegalStateException("CUSTOMER ID " + id + " DOES NOT EXIST");
         }
+        return null;
     }
 
     public boolean saveOrder(String productName, Long id, int quantity){
