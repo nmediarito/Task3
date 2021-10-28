@@ -20,7 +20,6 @@ import java.util.function.Function;
 public class StreamProcessing {
 
     public final static String PRODUCT_STORE = "product-store";
-    public final static String ORDER_STORE = "order-store";
 
     @Bean
     public Function<KStream<?, KafkaEvent>, KStream<String, OrderQuantity>> process() {
@@ -36,7 +35,7 @@ public class StreamProcessing {
 
             KStream<String, OrderQuantity> orderQuantity = orderKTable.
                     toStream().
-                    map((k, v) -> KeyValue.pair(k, new OrderQuantity(k, Math.toIntExact(v))));
+                    map((k, v) -> KeyValue.pair(k, new OrderQuantity(k, v)));
             // use the following code for testing
             orderQuantity.print(Printed.<String, OrderQuantity>toSysOut().withLabel("TEST"));
 

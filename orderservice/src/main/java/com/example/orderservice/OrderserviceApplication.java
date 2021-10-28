@@ -55,22 +55,8 @@ public class OrderserviceApplication{
 				logger.info("ORDER EXECUTED : COMMAND LINE RUNNER");
 				Thread.sleep(1200);
 			}
+
 		};
-				/*
-				HttpHeaders headers = new HttpHeaders();
-				headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-				RestTemplate restTemplate = new RestTemplate();
-				MultiValueMap<String, Object> map;
-				HttpEntity<MultiValueMap<String, Object>> request;
-				ResponseEntity<KafkaEvent> response;
-				POST request testing
-				map = new LinkedMultiValueMap<String, Object>();
-				map.add("id", randomCustomer);
-				map.add("productName", products[randomQuantity]);
-				map.add("quantity", randomQuantity);
-				response = restTemplate.postForEntity(url, request, KafkaEvent.class);
-				request = new HttpEntity<MultiValueMap<String, Object>>(map, headers);
-				*/
 	}
 
 }

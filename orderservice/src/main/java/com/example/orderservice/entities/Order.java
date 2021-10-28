@@ -15,6 +15,7 @@ public class Order {
     private Long id;
     private String supplier;
     private int quantity;
+    private int totalOrderPrice;
 
     @JsonBackReference
     @ManyToOne
@@ -64,12 +65,23 @@ public class Order {
         this.customer = customer;
     }
 
+    public int getTotalOrderPrice() {
+        return totalOrderPrice;
+    }
+
+    public void setTotalOrderPrice(int totalOrderPrice) {
+        this.totalOrderPrice = totalOrderPrice;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
                 ", supplier='" + supplier + '\'' +
                 ", quantity=" + quantity +
+                ", totalOrderPrice=" + totalOrderPrice +
+                ", customer=" + customer +
+                ", products=" + products +
                 '}';
     }
 }

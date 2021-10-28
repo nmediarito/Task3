@@ -1,6 +1,5 @@
 package com.example.orderservice.services;
 
-import com.example.orderservice.OrderserviceApplication;
 import com.example.orderservice.entities.Customer;
 import com.example.orderservice.entities.KafkaEvent;
 import com.example.orderservice.entities.Order;
@@ -16,11 +15,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -126,6 +127,62 @@ public class OrderService {
         return orderRepository.findById(orderId).get().getProducts();
     }
 
+    public List<Order> findOrdersByCustomer(Long customerId){
+        //empty list product
+        List<Order> products = new ArrayList<>();
+        //get the customer
+        Customer customer = customerRepository.findById(customerId).orElse(null);
+        //loop through the customers orders
+        for(int i = 0; i < customer.getOrders().size(); i++){
+            int totalPrice = customer.getOrders().get(i).getQuantity();
+            for(int j = 0; j < customer.getOrders().get(i).getProducts().size(); j++){
+                //multiply the quantity within the order with the price of each individual product within the order
+                totalPrice = totalPrice * customer.getOrders().get(i).getProducts().get(j).getPrice();
+                //sets the total price of the order
+                customer.getOrders().get(i).setTotalOrderPrice(totalPrice);
+            }
+            //add the total order value into the specific product from the order of the customer
+            products.add(customer.getOrders().get(i));
+        }
+        //return the list of products per order of the customer
+        return products;
+    }
 
+    public List<String> findProductsByCustomer(Long customerId){
+        //empty list product
+        List<String> productNames = new ArrayList<>();
+        //get the customer
+        Customer customer = customerRepository.findById(customerId).orElse(null);
+        //loop through the customers orders
+        for(int i = 0; i < customer.getOrders().size(); i++){
+            for(int j = 0; j < customer.getOrders().get(i).getProducts().size(); j++){
+                //add the product names ordered by the customer
+                productNames.add(customer.getOrders().get(i).getProducts().get(j).getName());
+            }
+        }
+        //return the list of products per order of the customer
+        return productNames;
+    }
+
+    public Map<Long, Integer> findTotalsByCustomer(Long customerId){
+        //empty list product
+        Map<Long, Integer> totals = new HashMap<>();
+        //get the customer
+        Customer customer = customerRepository.findById(customerId).orElse(null);
+        //loop through the customers orders
+        for(int i = 0; i < customer.getOrders().size(); i++){
+            int totalPrice = customer.getOrders().get(i).getQuantity();
+            for(int j = 0; j < customer.getOrders().get(i).getProducts().size(); j++){
+                //multiply the quantity within the order with the price of each individual product within the order
+                totalPrice = totalPrice * customer.getOrders().get(i).getProducts().get(j).getPrice();
+                //sets the total price of the order
+                customer.getOrders().get(i).setTotalOrderPrice(totalPrice);
+                //put the key = order id and value = total price of the order
+                totals.put(customer.getOrders().get(i).getId() ,customer.getOrders().get(i).getTotalOrderPrice());
+            }
+        }
+        //return the list of products per order of the customer
+        return totals;
+    }
 
 }
